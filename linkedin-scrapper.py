@@ -139,7 +139,7 @@ def RetreiveCompanyInformations(session, input_name):
 
 company_id = RetreiveCompanyInformations(session, input_name)
 
-def RetreiveEmployeesInformations(session, employees_counter,company_id, start):
+def RetreiveEmployeesInformations(session, employees_counter,company_id):
     default_counter = 25
     #max_counter = 50
     if employees_counter == '':
@@ -174,7 +174,8 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id, start):
             print('Role : %s'%employee[3])
             print('Link to profile : %s%s'%(profile_url_header,employee[2]))
             print('_________________________________\n')
+            file = open("output.csv", "a")
+            file.write(str(employee[0])+','+str(employee[1])+','+str(employee[2])+'\n')
+            file.close()
 
-start = 1
-#for start in range(3):
-RetreiveEmployeesInformations(session, employees_counter, company_id, start)
+RetreiveEmployeesInformations(session, employees_counter, company_id)
