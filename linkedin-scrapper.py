@@ -73,7 +73,7 @@ try:
 except:
     company_location = 'None'
 
-print('COMPANY DETAILS\n')
+print('\nCOMPANY DETAILS\n')
 print('Company name : %s'%company_name)
 print('Description : %s'%company_description)
 print('Website : %s'%company_website)
