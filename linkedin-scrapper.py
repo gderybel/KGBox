@@ -46,7 +46,7 @@ def CheckArguments():
 
     return email, password, input_name, employees_counter 
 
-def login(email, password):
+def Login(email, password):
     session = requests.session()
     mobile_agent = ('Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 '
                         'Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) '
@@ -171,10 +171,10 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
             print('Link to profile : %s%s'%(profile_url_header,employee[2]))
             print('_________________________________\n')
             file = open("output.csv", "a")
-            file.write(str(employee[0].encode("ascii", "ignore"))+','+str(employee[1].encode("ascii", "ignore"))+','+str(employee[2].encode("ascii", "ignore"))+','+str(employee[3].encode("ascii", "ignore"))+'\n')
+            file.write(str(employee[0].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[1].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[2].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[3].encode("ascii", "ignore").decode("utf-8") )+'\n')
             file.close()
 
 email, password, input_name, employees_counter = CheckArguments()
-session = login(email, password)
+session = Login(email, password)
 company_id = RetreiveCompanyInformations(session, input_name)
 RetreiveEmployeesInformations(session, employees_counter, company_id)
