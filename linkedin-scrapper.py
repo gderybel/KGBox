@@ -7,6 +7,10 @@ company_argument = '-c'
 if company_argument in sys.argv:
     input_name = sys.argv[sys.argv.index(company_argument)+1]
 
+employees_counter_argument = '-ec'
+if employees_counter_argument in sys.argv:
+    employees_counter = sys.argv[sys.argv.index(employees_counter_argument)+1]
+
 email_argument = '-e'
 if email_argument in sys.argv:
     email = sys.argv[sys.argv.index(email_argument)+1]
@@ -76,7 +80,7 @@ session.headers.update({'Csrf-Token': csrf_token})
 if 'input_name' not in globals():
     input_name = input('Wich company ? (Name should be shown on company url, e.g : Uber=>uber-com, Apple=>apple, ...) : \n')
 
-company_response = session.get(('https://www.linkedin.com/voyager/api/organization/companies?q=universalName&universalName='+input_name))
+company_response = session.get((f'https://www.linkedin.com/voyager/api/organization/companies?q=universalName&universalName={input_name}'))
 
 website_regex = r'companyPageUrl":"(http.*?)"'
 name_regex = r'"name":"(.*?)"'
@@ -117,7 +121,17 @@ print('Website : %s'%company_website)
 print('Location : %s : %s, %s\n'%(company_location[2],company_location[1],company_location[0]))
 print('Staff : %s'%company_staff_count)
 
-employees_response = session.get(('https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List('+ company_id +')&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count=25&origin=organization&start=0'))
+default_counter = 25
+if 'employees_counter' not in globals():
+    employees_counter = input(f'How many employees should we retreive ? (max : 50) (default : {default_counter}) : \n')
+
+try:
+    int(employees_counter)
+except:
+    print(f"Invalid input, default value used ({default_counter})")
+    employees_counter = default_counter
+
+employees_response = session.get((f'https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List({company_id})&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count={employees_counter}&origin=organization&start=0'))
 
 employee_regex = r'firstName":"(.*?)","lastName":"(.*?)","dashEntityUrn":"urn:li:fsd_profile:(.*?)","occupation":"(.*?)"'
 
