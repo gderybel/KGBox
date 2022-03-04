@@ -141,7 +141,7 @@ company_id = RetreiveCompanyInformations(session, input_name)
 
 def RetreiveEmployeesInformations(session, employees_counter,company_id, start):
     default_counter = 25
-    max_counter = 50
+    #max_counter = 50
     if employees_counter == '':
         employees_counter = input(f'How many employees should we retreive ? (max : 50) (default : {default_counter}) : \n')
 
@@ -155,24 +155,26 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id, start):
             print(f"Value is over 50, max value used ({max_counter})")
             employees_counter = max_counter"""
 
+    if int(employees_counter) > 25:
+        starts = int(employees_counter)/25
 
-    employees_response = session.get((f'https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List({company_id})&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count={employees_counter}&origin=organization&start={start*25}'))
+    for result in range(int(starts)):
 
-    employee_regex = r'firstName":"(.*?)","lastName":"(.*?)","dashEntityUrn":"urn:li:fsd_profile:(.*?)","occupation":"(.*?)"'
+        employees_response = session.get((f'https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List({company_id})&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count=25&origin=organization&start={result*25}'))
 
-    employees = re.findall(employee_regex, employees_response.text)
+        employee_regex = r'firstName":"(.*?)","lastName":"(.*?)","dashEntityUrn":"urn:li:fsd_profile:(.*?)","occupation":"(.*?)"'
 
-    profile_url_header = "https://www.linkedin.com/profile/view?id="
-    print('\n_____________ EMPLOYEES ______________\n')
+        employees = re.findall(employee_regex, employees_response.text)
 
-    for employee in employees:
-        print('Name : %s %s'%(employee[0], employee[1]))
-        print('Role : %s'%employee[3])
-        print('Link to profile : %s%s'%(profile_url_header,employee[2]))
-        print('_________________________________\n')
+        profile_url_header = "https://www.linkedin.com/profile/view?id="
+        print('\n_____________ EMPLOYEES ______________\n')
 
-#RetreiveEmployeesInformations(session, employees_counter, company_id)
+        for employee in employees:
+            print('Name : %s %s'%(employee[0], employee[1]))
+            print('Role : %s'%employee[3])
+            print('Link to profile : %s%s'%(profile_url_header,employee[2]))
+            print('_________________________________\n')
 
 start = 1
-for start in range(3):
-    RetreiveEmployeesInformations(session, employees_counter, company_id, start)
+#for start in range(3):
+RetreiveEmployeesInformations(session, employees_counter, company_id, start)
