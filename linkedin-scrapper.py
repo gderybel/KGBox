@@ -39,14 +39,12 @@ def CheckArguments():
         ---- Parameters ----
 
         -c\tprecise which company you want to retreive employees from (e.g. apple, uber-com, ...)
-        -ec\tprecise how much employee should the program output (max : 50, default 25)
+        -ec\tprecise how much employee should the program output (it has to be divisble by 25, default 25)
         -h\tshow this help menu
         """)
         exit()
 
     return email, password, input_name, employees_counter 
-
-email, password, input_name, employees_counter = CheckArguments()
 
 def login(email, password):
     session = requests.session()
@@ -87,8 +85,6 @@ def login(email, password):
     csrf_token = session.cookies['JSESSIONID'].replace('"', '')
     session.headers.update({'Csrf-Token': csrf_token})
     return session
-
-session = login(email, password)
 
 def RetreiveCompanyInformations(session, input_name):
     if input_name == '':
@@ -137,13 +133,11 @@ def RetreiveCompanyInformations(session, input_name):
 
     return company_id
 
-company_id = RetreiveCompanyInformations(session, input_name)
-
 def RetreiveEmployeesInformations(session, employees_counter,company_id):
     default_counter = 25
     #max_counter = 50
     if employees_counter == '':
-        employees_counter = input(f'How many employees should we retreive ? (max : 50) (default : {default_counter}) : \n')
+        employees_counter = input(f'How many employees should we retreive ? It has to be divisible by 25 (default : {default_counter}) : \n')
 
     try:
         int(employees_counter)
@@ -155,8 +149,11 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
             print(f"Value is over 50, max value used ({max_counter})")
             employees_counter = max_counter"""
 
-    if int(employees_counter) > 25:
+    if int(employees_counter)%25 == 0:
         starts = int(employees_counter)/25
+    else:
+        print('Number of employees has to be divisible by 25')
+        exit()
 
     for result in range(int(starts)):
 
@@ -178,4 +175,7 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
             file.write(str(employee[0])+','+str(employee[1])+','+str(employee[2])+'\n')
             file.close()
 
+email, password, input_name, employees_counter = CheckArguments()
+session = login(email, password)
+company_id = RetreiveCompanyInformations(session, input_name)
 RetreiveEmployeesInformations(session, employees_counter, company_id)
