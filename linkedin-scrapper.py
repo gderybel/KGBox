@@ -135,7 +135,6 @@ def RetreiveCompanyInformations(session, input_name):
 
 def RetreiveEmployeesInformations(session, employees_counter,company_id):
     default_counter = 25
-    #max_counter = 50
     if employees_counter == '':
         employees_counter = input(f'How many employees should we retreive ? It has to be divisible by 25 (default : {default_counter}) : \n')
 
@@ -172,7 +171,7 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
             print('Link to profile : %s%s'%(profile_url_header,employee[2]))
             print('_________________________________\n')
             file = open("output.csv", "a")
-            file.write(str(employee[0])+','+str(employee[1])+','+str(employee[2])+'\n')
+            file.write(str(employee[0].encode("ascii", "ignore"))+','+str(employee[1].encode("ascii", "ignore"))+','+str(employee[2].encode("ascii", "ignore"))+','+str(employee[3].encode("ascii", "ignore"))+'\n')
             file.close()
 
 email, password, input_name, employees_counter = CheckArguments()
