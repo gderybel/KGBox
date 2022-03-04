@@ -81,7 +81,7 @@ def login(email, password):
             print("Couldn't connect, wrong redirection\n")
             exit()
     except:
-        print("Couldn't connect, credentials might be incorrect\n")
+        print("Couldn't connect, credentials might be incorrect, or captcha was asked\n")
         exit()
 
     csrf_token = session.cookies['JSESSIONID'].replace('"', '')
@@ -139,7 +139,7 @@ def RetreiveCompanyInformations(session, input_name):
 
 company_id = RetreiveCompanyInformations(session, input_name)
 
-def RetreiveEmployeesInformations(session, employees_counter,company_id):
+def RetreiveEmployeesInformations(session, employees_counter,company_id, start):
     default_counter = 25
     max_counter = 50
     if employees_counter == '':
@@ -150,13 +150,13 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
     except:
         print(f"Invalid input, default value used ({default_counter})")
         employees_counter = default_counter
-    finally:
+    """finally:
         if int(employees_counter) > max_counter:
             print(f"Value is over 50, max value used ({max_counter})")
-            employees_counter = max_counter
+            employees_counter = max_counter"""
 
 
-    employees_response = session.get((f'https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List({company_id})&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count={employees_counter}&origin=organization&start=0'))
+    employees_response = session.get((f'https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List({company_id})&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count={employees_counter}&origin=organization&start={start*25}'))
 
     employee_regex = r'firstName":"(.*?)","lastName":"(.*?)","dashEntityUrn":"urn:li:fsd_profile:(.*?)","occupation":"(.*?)"'
 
@@ -171,4 +171,8 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
         print('Link to profile : %s%s'%(profile_url_header,employee[2]))
         print('_________________________________\n')
 
-RetreiveEmployeesInformations(session, employees_counter, company_id)
+#RetreiveEmployeesInformations(session, employees_counter, company_id)
+
+start = 1
+for start in range(3):
+    RetreiveEmployeesInformations(session, employees_counter, company_id, start)
