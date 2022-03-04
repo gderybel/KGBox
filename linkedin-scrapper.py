@@ -34,6 +34,7 @@ if help_argument in sys.argv:
     ---- Parameters ----
 
     -c\tprecise which company you want to retreive employees from (e.g. apple, uber-com, ...)
+    -ec\tprecise how much employee should the program output (max : 50, default 25)
     -h\tshow this help menu
     """)
     exit()
