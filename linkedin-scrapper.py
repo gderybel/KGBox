@@ -15,6 +15,25 @@ password_argument = '-p'
 if password_argument in sys.argv:
     password = sys.argv[sys.argv.index(password_argument)+1]
 
+help_argument = '-h'
+if help_argument in sys.argv:
+    print("""
+    ---- Credentials ----
+
+    -e\tprecise email to connect with Linkedin
+    -p\tprecise password to connect with Linkedin
+
+    Credentials are not saved to any distant server or anything, it's only used by the program.
+
+    We don't recommand to use '-p' argument, because the plain text password could appear in command history
+
+    ---- Parameters ----
+
+    -c\tprecise which company you want to retreive employees from (e.g. apple, uber-com, ...)
+    -h\tshow this help menu
+    """)
+    exit()
+
 
 session = requests.session()
 mobile_agent = ('Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 '
