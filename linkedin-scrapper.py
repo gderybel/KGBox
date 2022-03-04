@@ -7,6 +7,15 @@ company_argument = '-c'
 if company_argument in sys.argv:
     input_name = sys.argv[sys.argv.index(company_argument)+1]
 
+email_argument = '-e'
+if email_argument in sys.argv:
+    email = sys.argv[sys.argv.index(email_argument)+1]
+
+password_argument = '-p'
+if password_argument in sys.argv:
+    password = sys.argv[sys.argv.index(password_argument)+1]
+
+
 session = requests.session()
 mobile_agent = ('Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 '
                     'Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) '
@@ -17,8 +26,11 @@ session.headers.update({'User-Agent': mobile_agent,
 anon_response = session.get('https://www.linkedin.com/login')
 login_csrf = re.findall(r'name="loginCsrfParam" value="(.*?)"', anon_response.text)
 
-email = input('\nWhat is your Linkedin email (Your account might have 10+ relations) : \n')
-password = getpass('Enter your password : \n')
+if 'email' not in globals():
+    email = input('\nWhat is your Linkedin email (Your account might have 10+ relations) : \n')
+
+if 'password' not in globals():
+    password = getpass('Enter your password : \n')
 
 auth_payload = {
         'session_key': email,
