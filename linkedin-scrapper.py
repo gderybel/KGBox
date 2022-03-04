@@ -1,6 +1,11 @@
 import requests
 import re
+import sys
 from getpass import getpass
+
+company_argument = '-c'
+if company_argument in sys.argv:
+    input_name = sys.argv[sys.argv.index(company_argument)+1]
 
 session = requests.session()
 mobile_agent = ('Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 '
@@ -37,7 +42,8 @@ except:
 csrf_token = session.cookies['JSESSIONID'].replace('"', '')
 session.headers.update({'Csrf-Token': csrf_token})
 
-input_name = input('Wich company ? (Name should be shown on company url, e.g : Uber=>uber-com, Apple=>apple, ...) : \n')
+if 'input_name' not in globals():
+    input_name = input('Wich company ? (Name should be shown on company url, e.g : Uber=>uber-com, Apple=>apple, ...) : \n')
 
 company_response = session.get(('https://www.linkedin.com/voyager/api/organization/companies?q=universalName&universalName='+input_name))
 
