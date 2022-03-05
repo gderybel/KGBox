@@ -116,6 +116,10 @@ def RetreiveCompanyInformations(session, input_name):
 
     company_response = session.get((f'https://www.linkedin.com/voyager/api/organization/companies?q=universalName&universalName={input_name}'))
 
+    if company_response.status_code != 200:
+        print("Please verify company name, couldn't retrieve data from it.\nYou can find a valid company name in the company Linkedin url (e.g. : https://www.linkedin.com/company/microsoft/ => microsoft).")
+        exit()
+
     website_regex = r'companyPageUrl":"(http.*?)"'
     name_regex = r'"name":"(.*?)"'
     staff_regex = r'staffCount":([0-9]+),'
