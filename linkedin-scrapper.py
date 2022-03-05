@@ -150,7 +150,7 @@ def RetreiveCompanyInformations(session, input_name):
     try:
         company_location = re.findall(location_regex, company_response.text)[0]
     except:
-        company_location = 'None'
+        company_location = ('None','None','None')
 
     print('____________COMPANY DETAILS____________\n')
     print('Company name : %s'%company_name)
