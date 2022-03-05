@@ -48,6 +48,7 @@ def CheckArguments():
         ---- Parameters ----
 
         -o\toutput result to a output.csv
+        -no\tno output
         -c\tprecise which company you want to retreive employees from (e.g. apple, uber-com, ...)
         -ec\tprecise how much employee should the program output (it has to be divisble by 25, default 25)
         -h\tshow this help menu
