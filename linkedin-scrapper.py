@@ -5,9 +5,13 @@ from getpass import getpass
 
 def CheckArguments():
     output_argument = '-o'
-    output = False
+    output = ''
     if output_argument in sys.argv:
         output = True
+    
+    no_output_argument = '-no'
+    if no_output_argument in sys.argv:
+        output = False
 
     company_argument = '-c'
     input_name = ''
@@ -162,7 +166,7 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
 
     print('\n_____________ EMPLOYEES ______________\n')
 
-    if not output:
+    if output == '':
         output = input('Would you like to save data to a csv file ? (y/n) : \n')
         if output == 'y':
             output = True
