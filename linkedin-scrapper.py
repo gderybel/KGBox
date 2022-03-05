@@ -196,6 +196,10 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
 
         employees_response = session.get((f'https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List({company_id})&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count=25&origin=organization&start={result*25}'))
 
+        if employees_response.status_code != 200:
+            print("Please verify your network connection or status of Linkedin services, couldn't retreive data.")
+            exit()
+
         employee_regex = r'firstName":"(.*?)","lastName":"(.*?)","dashEntityUrn":"urn:li:fsd_profile:(.*?)","occupation":"(.*?)"'
 
         employees = re.findall(employee_regex, employees_response.text)
