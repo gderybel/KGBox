@@ -159,7 +159,9 @@ def RetreiveCompanyInformations(session, input_name):
 
 def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
     """
-    This function will retreive employees information about a specified company.
+    This function will retrieve employees information about a specified company.
+    Number of employees retrieved has to be divisible by 25, if there are 106 employees in the company,
+    and a user wants to retrieve all of them, he should indicate 125.
     """
     default_counter = 25
     if employees_counter == '':
@@ -170,10 +172,6 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
     except:
         print(f"Invalid input, default value used ({default_counter})")
         employees_counter = default_counter
-    """finally:
-        if int(employees_counter) > max_counter:
-            print(f"Value is over 50, max value used ({max_counter})")
-            employees_counter = max_counter"""
 
     if int(employees_counter)%25 == 0:
         starts = int(employees_counter)/25
