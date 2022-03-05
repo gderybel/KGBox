@@ -219,7 +219,7 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
     if output:
          print('A csv file has been created : output.csv')
 
-    print("\nIf there are a lot of blank name, it might be because your account is not old enough or doesn't have enough relations. In this case, Linkedin will keep people profile private just for you.\n")
+    print("\nIf there are a lot of blank names, it might be because your account is not old enough or doesn't have enough relations. In this case, Linkedin will keep people profile private just for you.\nIn this case, you should use another account because link to profile will not work aswell.\n")
 
 email, password, input_name, employees_counter, output = CheckArguments()
 session = Login(email, password)
