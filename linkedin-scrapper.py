@@ -4,6 +4,11 @@ import sys
 from getpass import getpass
 
 def CheckArguments():
+    output_argument = '-o'
+    output = False
+    if output_argument in sys.argv:
+        output = True
+
     company_argument = '-c'
     input_name = ''
     if company_argument in sys.argv:
@@ -30,7 +35,7 @@ def CheckArguments():
         ---- Credentials ----
 
         -e\tprecise email to connect with Linkedin
-        -p\tprecise password to connect with Linkedin
+        -p\tprecise password to connect with Linkedin, it might be between quotes
 
         Credentials are not saved to any distant server or anything, it's only used by the program.
 
@@ -38,13 +43,14 @@ def CheckArguments():
 
         ---- Parameters ----
 
+        -o\toutput result to a output.csv
         -c\tprecise which company you want to retreive employees from (e.g. apple, uber-com, ...)
         -ec\tprecise how much employee should the program output (it has to be divisble by 25, default 25)
         -h\tshow this help menu
         """)
         exit()
 
-    return email, password, input_name, employees_counter 
+    return email, password, input_name, employees_counter, output
 
 def Login(email, password):
     session = requests.session()
@@ -71,12 +77,12 @@ def Login(email, password):
         }
 
     response = session.post('https://www.linkedin.com/checkpoint/lg/login-submit?loginSubmitSource=GUEST_HOME', data=auth_payload, allow_redirects=False)
-
+    
     try:
         if response.headers['Location'] == 'https://www.linkedin.com/feed/':
             print('Connected Successfully\n')
         else:
-            print("Couldn't connect, wrong redirection\n")
+            print(f"Couldn't connect, wrong redirection : {response.headers['Location']}\n")
             exit()
     except:
         print("Couldn't connect, credentials might be incorrect, or captcha was asked\n")
@@ -133,7 +139,7 @@ def RetreiveCompanyInformations(session, input_name):
 
     return company_id
 
-def RetreiveEmployeesInformations(session, employees_counter,company_id):
+def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
     default_counter = 25
     if employees_counter == '':
         employees_counter = input(f'How many employees should we retreive ? It has to be divisible by 25 (default : {default_counter}) : \n')
@@ -154,6 +160,15 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
         print('Number of employees has to be divisible by 25')
         exit()
 
+    print('\n_____________ EMPLOYEES ______________\n')
+
+    if not output:
+        output = input('Would you like to save data to a csv file ? (y/n) : \n')
+        if output == 'y':
+            output = True
+        else:
+            output = False
+
     for result in range(int(starts)):
 
         employees_response = session.get((f'https://www.linkedin.com/voyager/api/search/hits?facetCurrentCompany=List({company_id})&facetGeoRegion=List()&keywords=List()&q=people&maxFacetValues=15&supportedFacets=List(GEO_REGION,CURRENT_COMPANY)&count=25&origin=organization&start={result*25}'))
@@ -163,18 +178,21 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id):
         employees = re.findall(employee_regex, employees_response.text)
 
         profile_url_header = "https://www.linkedin.com/profile/view?id="
-        print('\n_____________ EMPLOYEES ______________\n')
 
         for employee in employees:
             print('Name : %s %s'%(employee[0], employee[1]))
             print('Role : %s'%employee[3])
             print('Link to profile : %s%s'%(profile_url_header,employee[2]))
             print('_________________________________\n')
-            file = open("output.csv", "a")
-            file.write(str(employee[0].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[1].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[2].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[3].encode("ascii", "ignore").decode("utf-8") )+'\n')
-            file.close()
+            if output:
+                file = open("output.csv", "a")
+                file.write(str(employee[0].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[1].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[2].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[3].encode("ascii", "ignore").decode("utf-8") )+'\n')
+                file.close()
+        
+    if output:
+         print('A csv file has been created : output.csv')
 
-email, password, input_name, employees_counter = CheckArguments()
+email, password, input_name, employees_counter, output = CheckArguments()
 session = Login(email, password)
 company_id = RetreiveCompanyInformations(session, input_name)
-RetreiveEmployeesInformations(session, employees_counter, company_id)
+RetreiveEmployeesInformations(session, employees_counter, company_id, output)
