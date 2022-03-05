@@ -4,6 +4,10 @@ import sys
 from getpass import getpass
 
 def CheckArguments():
+    """
+    This function will check all arguments given by the user and assign values to variables.
+    It permits to a user to not interact with the program (if all arguments are given).
+    """
     output_argument = '-o'
     output = ''
     if output_argument in sys.argv:
@@ -58,6 +62,10 @@ def CheckArguments():
     return email, password, input_name, employees_counter, output
 
 def Login(email, password):
+    """
+    This function will connect user to Linkedin, grab session cookie and set headers to session, 
+    for further use (Company & Employee requests).
+    """
     session = requests.session()
     mobile_agent = ('Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 '
                         'Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) '
@@ -98,6 +106,11 @@ def Login(email, password):
     return session
 
 def RetreiveCompanyInformations(session, input_name):
+    """
+    This function will retrieve Linkedin informations about a specified company.
+    A company name can be found on it's Linkedin page url (e.g. : https://www.linkedin.com/company/microsoft/ => microsoft).
+    Requests are made to Linkedin voyager API.
+    """
     if input_name == '':
         input_name = input('Wich company ? (Name should be shown on company url, e.g : Uber=>uber-com, Apple=>apple, ...) : \n')
 
@@ -145,6 +158,9 @@ def RetreiveCompanyInformations(session, input_name):
     return company_id
 
 def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
+    """
+    This function will retreive employees information about a specified company.
+    """
     default_counter = 25
     if employees_counter == '':
         employees_counter = input(f'How many employees should we retreive ? It has to be divisible by 25 (default : {default_counter}) : \n')
