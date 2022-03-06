@@ -67,7 +67,6 @@ def OutputToCsv(country, region, city, ISP, location):
     file.close()
     print("\nContent has been added to 'ip-locator.csv'.\n")
 
-
 if __name__ == "__main__":
     output, IP = CheckArguments()
 
