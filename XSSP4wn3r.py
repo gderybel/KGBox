@@ -1,10 +1,6 @@
 # Payload source : https://github.com/payloadbox/xss-payload-list/blob/master/Intruder/xss-payload-list.txt
 # Website : https://xss-game.appspot.com/level1/frame?query=
 
-##### Tasks #####
-# try contact url before requests
-# add argument url & query parameter
-
 import requests
 import sys
 
@@ -17,6 +13,16 @@ def CheckArguments():
     useragent = ''
     if useragent_argument in sys.argv:
         useragent = sys.argv[sys.argv.index(useragent_argument)+1]
+
+    target_argument = '-t'
+    target = ''
+    if target_argument in sys.argv:
+        target = sys.argv[sys.argv.index(target_argument)+1]
+    
+    query_parameter_argument = '-q'
+    query_parameter = ''
+    if query_parameter_argument in sys.argv:
+        query_parameter = sys.argv[sys.argv.index(query_parameter_argument)+1]
 
     output_argument = '-o'
     output = ''
@@ -39,9 +45,8 @@ def CheckArguments():
         """)
         exit()
 
-    return useragent, output
+    return useragent, output, target, query_parameter
     
-
 def LoadPayloads():
     file = open('payloads.txt', 'rb')
     payloads = file.readlines()
@@ -84,16 +89,16 @@ def TestPayloads(payloads, target, parameter, useragent, output):
             if output:
                 OutputToCsv(payload,False)
 
-
 def OutputToCsv(payload,injectable):
     file = open('XSSScan.csv', 'a')
     file.write(f'{payload},{injectable}\n')
     file.close()
 
 if __name__ == "__main__":
-    useragent, output = CheckArguments()
+    useragent, output, target, query_parameter = CheckArguments()
     payloads = LoadPayloads()
-
-    url = input('Wich URL shall we try to inject ? :\n')
-    parameter = input('Wich URL parameter shall we try to inject ? :\n')
-    TestPayloads(payloads, url, parameter, useragent, output)
+    if target == '':
+        target = input('Wich URL shall we try to inject ? :\n')
+    if query_parameter == '':
+        query_parameter = input('Wich URL parameter shall we try to inject ? :\n')
+    TestPayloads(payloads, target, query_parameter, useragent, output)
