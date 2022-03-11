@@ -2,9 +2,8 @@
 # Website : https://xss-game.appspot.com/level1/frame?query=
 
 ##### Tasks #####
-# add user agent specification
-# add output to csv
 # try contact url before requests
+# add argument url & query parameter
 
 import requests
 import sys
@@ -67,13 +66,21 @@ def TestPayloads(payloads, target, parameter, useragent, output):
     for payload in payloads:
         payload = payload.decode("utf-8").replace('\n','')
         payload_url = target+'?'+parameter+'='+payload
-        response = session.get(payload_url)
-        if str(payload) in response.text:
-            print(f'Parameter "{parameter}" might be injectable with payload : "{payload}".')
+
+        try:
+            response = session.get(payload_url)
+            result = response.text
+            status = response.status_code
+        except:
+            result = 'customresponse'
+            status = 'Not connected'
+
+        if str(payload) in result:
+            print(f'Parameter "{parameter}" might be injectable with payload : "{payload}". ({status})')
             if output:
                 OutputToCsv(payload,True)
         else:
-            print(f'Parameter "{parameter}" might not be injectable.')
+            print(f'Parameter "{parameter}" might not be injectable. ({status})')
             if output:
                 OutputToCsv(payload,False)
 
