@@ -7,6 +7,30 @@
 # try contact url before requests
 
 import requests
+import sys
+
+def CheckArguments():
+    """
+    This function will check all arguments given by the user and assign values to variables.
+    It permits to a user to not interact with the program (if all arguments are given).
+    """
+    useragent_argument = '-H'
+    useragent = ''
+    if useragent_argument in sys.argv:
+        useragent = sys.argv[sys.argv.index(useragent_argument)+1]
+
+    help_argument = '-h'
+    if help_argument in sys.argv:
+        print("""
+        ---- Parameters ----
+
+        -H\tprecise the User-Agent to use, it might be betweeen quotes ''
+        -h\tshow this help menu
+        """)
+        exit()
+
+    return useragent
+    
 
 def LoadPayloads():
     file = open('payloads.txt', 'rb')
@@ -14,13 +38,13 @@ def LoadPayloads():
     file.close()
     return payloads
 
-def TestPayloads(payloads, target, parameter):
+def TestPayloads(payloads, target, parameter, useragent):
     session = requests.session()
-    """mobile_agent = ('Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; SCH-I535 '
-                        'Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) '
-                        'Version/4.0 Mobile Safari/534.30')
-    session.headers.update({'User-Agent': mobile_agent,
-                                'X-RestLi-Protocol-Version': '2.0.0'})"""
+    if useragent == '':
+        useragent = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+                            'AppleWebKit/605.1.15 (KHTML, like Gecko) '
+                            'Version/15.2 Safari/605.1.15')
+    session.headers.update({'User-Agent': useragent})
     for payload in payloads:
         payload = payload.decode("utf-8").replace('\n','')
         payload_url = target+'?'+parameter+'='+payload
@@ -31,8 +55,9 @@ def TestPayloads(payloads, target, parameter):
             print(f'Parameter "{parameter}" might not be injectable.')
 
 if __name__ == "__main__":
+    useragent = CheckArguments()
     payloads = LoadPayloads()
 
     url = input('Wich URL shall we try to inject ? :\n')
     parameter = input('Wich URL parameter shall we try to inject ? :\n')
-    TestPayloads(payloads, url, parameter)
+    TestPayloads(payloads, url, parameter, useragent)
