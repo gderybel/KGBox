@@ -213,7 +213,7 @@ def RetreiveEmployeesInformations(session, employees_counter,company_id,output):
             print('_________________________________\n')
             if output:
                 file = open("output.csv", "a")
-                file.write(str(employee[0].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[1].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[2].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[3].encode("ascii", "ignore").decode("utf-8") )+'\n')
+                file.write(str(employee[0].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[1].encode("ascii", "ignore").decode("utf-8") )+','+str(profile_url_header.encode("ascii", "ignore").decode("utf-8") )+str(employee[2].encode("ascii", "ignore").decode("utf-8") )+','+str(employee[3].encode("ascii", "ignore").decode("utf-8") )+'\n')
                 file.close()
         
     if output:
