@@ -48,7 +48,7 @@ def CheckArguments():
     return useragent, output, target, query_parameter
     
 def LoadPayloads():
-    file = open('payloads.txt', 'rb')
+    file = open('xss_payloads.txt', 'rb')
     payloads = file.readlines()
     file.close()
     return payloads
