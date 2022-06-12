@@ -1,4 +1,3 @@
-
 import whois
 import csv # work in progress
 import re
@@ -13,14 +12,19 @@ def Whois():
     
     if len(domain_info) != 0: # need to work the condition
                         # Result
-        with open('result.txt', 'w') as f:
-            print("[+]Domain: ", domain_info.domain)
-            print("[+]Status: ", domain_info.get('status'))
-            print("[+]Registrar: ", domain_info.get('registrar'))
-            print("[+]Update time: ", domain_info.get('updated_date'))
-            print("[+]Expiration time: ", domain_info.get('expiration_date'))
-            print("[+]Name server: ", domain_info.get('name_servers'))
-            print("[+]Email: ", domain_info.get('emails'))
+        f = ("[+]Domain: ", domain_info.domain,
+            "\n[+]Status: ", domain_info.get('status'),
+            "\n[+]Registrar: ", domain_info.get('registrar'),
+            "\n[+]Update time: ", domain_info.get('updated_date'),
+            "\n[+]Expiration time: ", domain_info.get('expiration_date'),
+            "\n[+]Name server: ", domain_info.get('name_servers'),
+            "\n[+]Email: ", domain_info.get('emails'))
+        fstr = str(f)
+        file = open('result.txt', 'a+')
+        file.write(fstr)
+        file.readlines()
+        file.close
+
                         # Output_file
         """print('souhaitez-vous enregistrer ses informations dans un fichier TXT [o/N]')
 
