@@ -4,40 +4,74 @@ import re
 import json
 import dns
 import os.path
+from genericpath import exists
+import whois
 
-def Whois():
+def Whois(domain):
+    """
+    This function will retrieve dns informations about a target IP/Domain.
+    Requests are made through python-whois library.
+    """
+    domain_info = whois.whois(domain)
 
-    print('Bienvenue dans le programme DNS Lookup de KGBox ! Renseigne ici le domaine que tu souhaites cibler:')
-    domain_info = whois.whois(input())
+    if not all(domain_info.get(var) is None for var in domain_info):
+        result = f"""
+____________________________________________________________________________________________________________________________
+
+[+]Domain: {domain_info.domain},
+[+]Status: {domain_info.get('status')},
+[+]Registrar: {domain_info.get('registrar')},
+[+]Update time: {domain_info.get('updated_date')},
+[+]Expiration time: {domain_info.get('expiration_date')},
+[+]Servers names: {domain_info.get('name_servers')},
+[+]Emails: {domain_info.get('emails')}
+
+ ____________________________________________________________________________________________________________________________
+"""
+        print(result)
+
+    else:
+        print("\nTarget not valid.")
+        exit()
     
-    if len(domain_info) != 0: # need to work the condition
-                        # Result
-        f = ("[+]Domain: ", domain_info.domain,
-            "\n[+]Status: ", domain_info.get('status'),
-            "\n[+]Registrar: ", domain_info.get('registrar'),
-            "\n[+]Update time: ", domain_info.get('updated_date'),
-            "\n[+]Expiration time: ", domain_info.get('expiration_date'),
-            "\n[+]Name server: ", domain_info.get('name_servers'),
-            "\n[+]Email: ", domain_info.get('emails'))
-        fstr = str(f)
-        file = open('result.txt', 'a+')
-        file.write(fstr)
-        file.readlines()
+    return domain_info
+
+
+def outputToCsv(domain_info):
+    """
+    This function will output result to a csv file for further use.
+    """
+    csv_header = 'Domain,Status,Registrar,Update time,Expiration time,Servers names,Emails\n'
+    csv_content = (
+    str(domain_info.domain).replace(',',';') + ',' +
+    str(domain_info.get('status')).replace(',',';') + ',' +
+    str(domain_info.get('registrar')).replace(',',';') + ',' +
+    str(domain_info.get('updated_date')).replace(',',';') + ',' +
+    str(domain_info.get('expiration_date')).replace(',',';') + ',' +
+    str(domain_info.get('servers_names')).replace(',',';') + ',' +
+    str(domain_info.get('emails')).replace(',',';') +'\n'
+    )
+
+    filename = 'result.csv'
+
+    if exists(filename):
+        file = open('result.csv', 'a+')
+        file.write(csv_content)
+        file.close
+    else:
+        file = open('result.csv', 'w')
+        file.write(csv_header + csv_content)
         file.close
 
-                        # Output_file
-        """print('souhaitez-vous enregistrer ses informations dans un fichier TXT [o/N]')
+def startProgram():
+    domain = input('\nWelcome to our DNS loopkup tool ! Enter your target IP/Domain here : \n')
+    domain_info = Whois(domain)
 
-        if input() == 'o':
-            save_path = 'C:/'
-            file = open('result.txt', 'w')
-            #modifier le file.write ci dessous
-            file.write(str(domain_info.domain.encode("ascii", "ignore").decode("utf-8")))
-            file.close()
-        else:
-            pass"""
+    # Output_file
+    output = input('Would you like to save output to csv ? [y/N] : \n')
+    if (output == 'y' or output == 'Y'):
+        outputToCsv(domain_info)
     else:
-        print("Le domaine renseigné n'est pas valide. vérifiez l'orthographe puis réessayez.")
+        pass
 
-
-Whois()
+startProgram()
