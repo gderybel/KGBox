@@ -1,0 +1,6 @@
+/credentials.json
+/*.csv
+/try_xsspawner.py
+/try_xss_payloads.txt
+/try_username_checker.py
+/__pycache__
